@@ -3,6 +3,9 @@
   <head>
     <title>UHV SCADA</title>
     <meta name="description" content="UHV SCADA report" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
 
     </style>
@@ -76,25 +79,25 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th scope="col">item</th>
-                <th scope="col">ItemName</th>
-                <th scope="col">ItemDescription</th>
-                <th scope="col">SourceAddressPV</th>
+                <th class="col">item</th>
+                <th class="col">ItemName</th>
+                <th class="col">ItemDescription</th>
+                <th class="col">SourceAddressPV</th>
               </tr>
             </thead>
             <tbody>
-              <tr> <th scope="col"></th>
-                <th scope="col"> <input
+              <tr> <th class="col"></th>
+                <th class="col"> <input
                   ng-model="s.ItemName"
                   placeholder="ค้นตาม ItemName"
                   class="form-control input-md"
                 /></th>
-                <th scope="col"> <input
+                <th class="col"> <input
                   ng-model="s.ItemDescription"
                   placeholder="ค้นตาม ItemDescription"
                   class="form-control input-md"
                 /></th>
-                <th scope="col"> <input
+                <th class="col"> <input
                   ng-model="s.SourceAddressPV"
                   placeholder="ค้นตาม SourceAddressPV"
                   class="form-control input-md"
@@ -103,10 +106,10 @@
               <!--<tr ng-repeat=" r in filtered=(uhv.Alltag |limitTo: 15 | filter:s)"> -->
               <!-- <tr ng-repeat=" r in  uhv.Alltag | filter:s"> -->
                 <tr ng-repeat=" r in  uhv.Alltag | filter:s |limitTo: 15">
-                <td>{{ $index+1}} </td>
-                <th><h4>{{ r.ItemName |myfilter}}</h4></th>
-                <td>{{ r.ItemDescription}} </td>
-                <td>{{ r.SourceAddressPV}} </td>
+                <td class="col">{{ $index+1}} </td>
+                <th class="col"><h4>{{ r.ItemName }}</h4></th>
+                <td class="col">{{ r.ItemDescription}} </td>
+                <td class="col">{{ r.SourceAddressPV}} </td>
               </tr>
             </tbody>
           </table>
