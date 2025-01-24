@@ -3,9 +3,7 @@
   <head>
     <title>UHV SCADA.1</title>
     <meta name="description" content="UHV SCADA report" />
-    <style>
-
-    </style>
+    <style></style>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -36,47 +34,46 @@
       angular
         .module("app", ["ui.bootstrap"])
         .controller("uhv", function ($scope, $http) {
-          
           $http.get("uhv_rev2.json").then(
             function successCallback(response) {
-              $scope.uhv = response.data;
-              console.log("data uhv : ");
-              console.log(response.data);
+              $scope.uhv = response.data
+              console.log("data uhv : ")
+              console.log(response.data)
             },
             function errorCallback(response) {
-              console.log("Unable to perform get request");
+              console.log("Unable to perform get request")
             }
-          );
-          
-        }).filter('myfilter', function() {
-            return function(x) {
-                var i, c, txt = "";
-                for (i = 0; i < x.length; i++) {
-                    c = x[i];
-  
-                    c = c.toUpperCase();
-  
-                    txt += c;
-                }
-                return txt;
-            };
-        });
-        
-        
-          
-       
+          )
+        })
+        .filter("myfilter", function () {
+          return function (x) {
+            var i,
+              c,
+              txt = ""
+            for (i = 0; i < x.length; i++) {
+              c = x[i]
+
+              c = c.toUpperCase()
+
+              txt += c
+            }
+            return txt
+          }
+        })
     </script>
   </head>
 
   <body class="contener">
     <p id="demo"></p>
 
-<script>
-const d = new Date();
-document.getElementById("demo").innerHTML = d;
-</script>
+    <script>
+      const d = new Date()
+      document.getElementById("demo").innerHTML = d
+    </script>
     <div ng-app="app" ng-controller="uhv">
-     <h2 class="text-center">ระบบค้นหา DCS Tag ของ RDCC Plant  </h2>
+      <h2 class="text-center bg-primary text-white p-2">
+        ระบบค้นหา DCS Tag ของ RDCC Plant
+      </h2>
       <div class="row">
         <div class="col-lg-12">
           <table class="table table-hover">
@@ -89,36 +86,42 @@ document.getElementById("demo").innerHTML = d;
               </tr>
             </thead>
             <tbody>
-              <tr> <th scope="col"></th>
-                <th scope="col"> <input
-                  ng-model="s.ItemName"
-                  placeholder="ค้นตาม ItemName"
-                  class="form-control input-md"
-                /></th>
-                <th scope="col"> <input
-                  ng-model="s.ItemDescription"
-                  placeholder="ค้นตาม ItemDescription"
-                  class="form-control input-md"
-                /></th>
-                <th scope="col"> <input
-                  ng-model="s.SourceAddressPV"
-                  placeholder="ค้นตาม SourceAddressPV"
-                  class="form-control input-md"
-                /></th>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">
+                  <input
+                    ng-model="s.ItemName"
+                    placeholder="ค้นตาม ItemName"
+                    class="form-control input-md"
+                  />
+                </th>
+                <th scope="col">
+                  <input
+                    ng-model="s.ItemDescription"
+                    placeholder="ค้นตาม ItemDescription"
+                    class="form-control input-md"
+                  />
+                </th>
+                <th scope="col">
+                  <input
+                    ng-model="s.SourceAddressPV"
+                    placeholder="ค้นตาม SourceAddressPV"
+                    class="form-control input-md"
+                  />
+                </th>
               </tr>
               <!--<tr ng-repeat=" r in filtered=(uhv.Alltag |limitTo: 15 | filter:s)"> -->
               <!-- <tr ng-repeat=" r in  uhv.Alltag | filter:s"> -->
-                <tr ng-repeat=" r in  uhv.Alltag | filter:s |limitTo: 15">
-                <td>{{ $index+1}} </td>
+              <tr ng-repeat=" r in  uhv.Alltag | filter:s |limitTo: 50">
+                <td>{{ $index+1}}</td>
                 <th><h4>{{ r.ItemName |myfilter}}</h4></th>
-                <td>{{ r.ItemDescription}} </td>
-                <td>{{ r.SourceAddressPV}} </td>
+                <td>{{ r.ItemDescription}}</td>
+                <td>{{ r.SourceAddressPV}}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </body>
 </html>
