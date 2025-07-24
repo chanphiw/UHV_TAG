@@ -1,127 +1,446 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>UHV SCADA.1</title>
-    <meta name="description" content="UHV SCADA report" />
-    <style></style>
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
-    <script src="https://morgul.github.io/ui-bootstrap4/ui-bootstrap-tpls-3.0.6.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+<head>
+  <title>UHV SCADA.1</title>
+  <meta name="description" content="UHV SCADA report" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    <script>
-      angular
-        .module("app", ["ui.bootstrap"])
-        .controller("uhv", function ($scope, $http) {
-          $http.get("uhv_rev2.json").then(
-            function successCallback(response) {
-              $scope.uhv = response.data
-              console.log("data uhv : ")
-              console.log(response.data)
-            },
-            function errorCallback(response) {
-              console.log("Unable to perform get request")
+    .main-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .header-section h2 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .date-display {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 1.1rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .search-section {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .search-title {
+      color: #667eea;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .form-control {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: rgba(102, 126, 234, 0.02);
+    }
+
+    .form-control:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      background: white;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table thead th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 20px 15px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+    }
+
+    .table tbody tr {
+      transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+      background: rgba(102, 126, 234, 0.05);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .table tbody td,
+    .table tbody th {
+      padding: 15px;
+      border-top: 1px solid rgba(102, 126, 234, 0.1);
+      vertical-align: middle;
+    }
+
+    .item-name {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .item-index {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #28a745;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(102, 126, 234, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .stats-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+      display: block;
+    }
+
+    .stats-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .spinner-border {
+      color: #667eea;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        margin: 10px;
+        padding: 20px;
+      }
+
+      .header-section h2 {
+        font-size: 1.8rem;
+      }
+
+      .table-responsive {
+        border-radius: 15px;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
+  <script src="https://morgul.github.io/ui-bootstrap4/ui-bootstrap-tpls-3.0.6.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
+
+  <script>
+    angular
+      .module("app", ["ui.bootstrap"])
+      .controller("uhv", function ($scope, $http) {
+        $scope.loading = true
+        $scope.totalItems = 0
+        $scope.filteredItems = 0
+
+        $http.get("uhv_rev2.json").then(
+          function successCallback(response) {
+            $scope.uhv = response.data
+            $scope.totalItems = response.data.Alltag ? response.data.Alltag.length : 0
+            $scope.filteredItems = $scope.totalItems
+            $scope.loading = false
+            console.log("data uhv : ")
+            console.log(response.data)
+          },
+          function errorCallback(response) {
+            console.log("Unable to perform get request")
+            $scope.loading = false
+          }
+        )
+
+        // Watch for search changes to update filtered count
+        $scope.$watchGroup(['s.ItemName', 's.ItemDescription', 's.SourceAddressPV'], function () {
+          if ($scope.uhv && $scope.uhv.Alltag) {
+            var filtered = $scope.uhv.Alltag
+            if ($scope.s) {
+              if ($scope.s.ItemName) {
+                filtered = filtered.filter(function (item) {
+                  return item.ItemName && item.ItemName.toLowerCase().includes($scope.s.ItemName.toLowerCase())
+                })
+              }
+              if ($scope.s.ItemDescription) {
+                filtered = filtered.filter(function (item) {
+                  return item.ItemDescription && item.ItemDescription.toLowerCase().includes($scope.s.ItemDescription.toLowerCase())
+                })
+              }
+              if ($scope.s.SourceAddressPV) {
+                filtered = filtered.filter(function (item) {
+                  return item.SourceAddressPV && item.SourceAddressPV.toLowerCase().includes($scope.s.SourceAddressPV.toLowerCase())
+                })
+              }
             }
-          )
-        })
-        .filter("myfilter", function () {
-          return function (x) {
-            var i,
-              c,
-              txt = ""
-            for (i = 0; i < x.length; i++) {
-              c = x[i]
-
-              c = c.toUpperCase()
-
-              txt += c
-            }
-            return txt
+            $scope.filteredItems = filtered.length
           }
         })
-    </script>
-  </head>
 
-  <body class="contener">
-    <p id="demo"></p>
+        // Initialize search object
+        $scope.s = {}
+      })
+      .filter("myfilter", function () {
+        return function (x) {
+          if (!x) return ''
+          var i,
+            c,
+            txt = ""
+          for (i = 0; i < x.length; i++) {
+            c = x[i]
+            c = c.toUpperCase()
+            txt += c
+          }
+          return txt
+        }
+      })
+  </script>
+</head>
+
+<body class="contener">
+  <div class="main-container fade-in">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="status-indicator"></div>
+      <h2>ระบบค้นหา DCS Tag ของ RDCC Plant</h2>
+      <div class="date-display">
+        <span id="demo"></span>
+      </div>
+    </div>
 
     <script>
       const d = new Date()
-      document.getElementById("demo").innerHTML = d
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }
+      document.getElementById("demo").innerHTML = d.toLocaleDateString('th-TH', options)
     </script>
+
     <div ng-app="app" ng-controller="uhv">
-      <h2 class="text-center bg-primary text-white p-2">
-        ระบบค้นหา DCS Tag ของ RDCC Plant
-      </h2>
-      <div class="row">
-        <div class="col-lg-12">
+      <!-- Stats Section -->
+      <div class="row" ng-show="!loading">
+        <div class="col-md-6">
+          <div class="stats-card">
+            <span class="stats-number">{{ totalItems | number }}</span>
+            <span class="stats-label">Total Tags</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="stats-card">
+            <span class="stats-number">{{ filteredItems | number }}</span>
+            <span class="stats-label">Filtered Results</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading Section -->
+      <div class="loading-spinner" ng-show="loading">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <p class="mt-3">กำลังโหลดข้อมูล...</p>
+      </div>
+
+      <!-- Search Section -->
+      <div class="search-section" ng-show="!loading">
+        <div class="search-title">
+          <span class="search-icon">🔍</span>
+          ค้นหาข้อมูล DCS Tag
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">ค้นตาม ItemName:</label>
+            <input ng-model="s.ItemName" placeholder="ป้อน ItemName ที่ต้องการค้นหา" class="form-control" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">ค้นตาม ItemDescription:</label>
+            <input ng-model="s.ItemDescription" placeholder="ป้อน Description ที่ต้องการค้นหา" class="form-control" />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label">ค้นตาม SourceAddressPV:</label>
+            <input ng-model="s.SourceAddressPV" placeholder="ป้อน Address ที่ต้องการค้นหา" class="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Section -->
+      <div class="table-container" ng-show="!loading">
+        <div class="table-responsive">
           <table class="table table-hover">
             <thead>
               <tr>
-                <th scope="col">item</th>
+                <th scope="col" style="width: 80px;">ลำดับ</th>
                 <th scope="col">ItemName</th>
                 <th scope="col">ItemDescription</th>
                 <th scope="col">SourceAddressPV</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">
-                  <input
-                    ng-model="s.ItemName"
-                    placeholder="ค้นตาม ItemName"
-                    class="form-control input-md"
-                  />
-                </th>
-                <th scope="col">
-                  <input
-                    ng-model="s.ItemDescription"
-                    placeholder="ค้นตาม ItemDescription"
-                    class="form-control input-md"
-                  />
-                </th>
-                <th scope="col">
-                  <input
-                    ng-model="s.SourceAddressPV"
-                    placeholder="ค้นตาม SourceAddressPV"
-                    class="form-control input-md"
-                  />
-                </th>
+              <tr ng-repeat="r in uhv.Alltag | filter:s | limitTo: 50 track by $index">
+                <td>
+                  <div class="item-index">{{ $index + 1 }}</div>
+                </td>
+                <td>
+                  <div class="item-name">{{ r.ItemName | myfilter }}</div>
+                </td>
+                <td>{{ r.ItemDescription }}</td>
+                <td>
+                  <code
+                    style="background: rgba(102, 126, 234, 0.1); color: #667eea; padding: 4px 8px; border-radius: 5px;">
+                      {{ r.SourceAddressPV }}
+                    </code>
+                </td>
               </tr>
-              <!--<tr ng-repeat=" r in filtered=(uhv.Alltag |limitTo: 15 | filter:s)"> -->
-              <!-- <tr ng-repeat=" r in  uhv.Alltag | filter:s"> -->
-              <tr ng-repeat=" r in  uhv.Alltag | filter:s |limitTo: 50">
-                <td>{{ $index+1}}</td>
-                <th><h4>{{ r.ItemName |myfilter}}</h4></th>
-                <td>{{ r.ItemDescription}}</td>
-                <td>{{ r.SourceAddressPV}}</td>
+              <tr ng-show="(uhv.Alltag | filter:s).length === 0 && !loading">
+                <td colspan="4" class="text-center" style="padding: 40px;">
+                  <div style="color: #6c757d;">
+                    <i style="font-size: 3rem; margin-bottom: 15px;">📭</i>
+                    <p style="font-size: 1.2rem; margin: 0;">ไม่พบข้อมูลที่ตรงกับการค้นหา</p>
+                    <small>ลองปรับเปลี่ยนคำค้นหาและลองใหม่</small>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <!-- Results info -->
+        <div class="p-3" style="background: rgba(102, 126, 234, 0.05); border-top: 1px solid rgba(102, 126, 234, 0.1);"
+          ng-show="(uhv.Alltag | filter:s).length > 50">
+          <small class="text-muted">
+            แสดง 50 รายการแรกจากทั้งหมด {{ (uhv.Alltag | filter:s).length | number }} รายการ
+          </small>
+        </div>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
